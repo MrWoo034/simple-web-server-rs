@@ -11,7 +11,7 @@ pub async fn get_foo(
     Path(id): Path<String>,
     foo_store: Data<FooStore>,
 ) -> impl actix_web::Responder {
-    println!("getting a foo!, received request {:#?}", id);
+    log::info!("GET /foo/{:#?}", id);
     match foo_store.get_foo(id) {
         Ok(foo) => {
             let body: String = serde_json::to_string(&foo).unwrap();
@@ -23,6 +23,7 @@ pub async fn get_foo(
 
 #[post("/foo")]
 pub async fn post_foo(foo: Json<Foo>, foo_store: Data<FooStore>) -> impl actix_web::Responder {
+    log::info!("POST /foo/{:#?}", foo);
     let name = match &foo.name {
         Some(name) => name.clone(),
         None => return HttpResponse::BadRequest().body("No name provided"),
@@ -41,6 +42,7 @@ pub async fn delete_foo(
     Path(id): Path<String>,
     foo_store: Data<FooStore>,
 ) -> impl actix_web::Responder {
+    log::info!("DELETE /foo/{:#?}", id);
     match foo_store.delete_foo(id) {
         Ok(_) => HttpResponse::NoContent().body(""),
         Err(err) => HttpResponse::NotFound().body(err.to_string()),
