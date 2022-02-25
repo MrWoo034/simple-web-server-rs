@@ -15,6 +15,11 @@ const ADDRESS: &str = "127.0.0.1:8080";
 
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
+    dotenv::dotenv().ok();
+    env_logger::init();
+
+    log::info!("Starting simple-web-server");
+
     let foo_store = Data::new(FooStore::new());
     let _server = actix_web::HttpServer::new(move || {
         App::new()
